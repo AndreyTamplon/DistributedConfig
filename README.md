@@ -185,35 +185,35 @@
 ## Запуск
 
 1) Необходимо заполнить файл конфигурации (файл app.env). Парсер сначала посмотрит в .env файлах, затем, если эти значения указаны в переменных среды, он отдаст приоритет им.
-   
-    2.1) Для неконтейнеризированного запуска необходимо:
+
+   2.1. Для неконтейнеризированного запуска необходимо:
     a) Установить postgresql,
     b) Создать базу данных: 
-   
-   ```bash
-   createdb your_db_name
-   ```
-   
+
+```bash
+createdb your_db_name
+```
+
     и внести данные о базе в makefile (host, user, password, database).
-   
-   2) Чтобы развернуть сервис в докере нужно проделать следующие шаги:   
-   
-   ```bash
-   docker-compose --env-file app.env up
-   ```
-   
-   - Войти в контейнер с приложением: 
-     
-     ```bash
-     docker exec -it <ContainerId> bash
-     ```
-   
-   - Установить утилиту migrate: 
-     
-     ```bash
-     curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
-     mv migrate.linux-amd64 $GOPATH/bin/migrate
-     ```
+
+2.2   Чтобы развернуть сервис в докере нужно проделать следующие шаги:   
+
+```bash
+docker-compose --env-file app.env up
+```
+
+- Войти в контейнер с приложением: 
+  
+  ```bash
+  docker exec -it <ContainerId> bash
+  ```
+
+- Установить утилиту migrate: 
+  
+  ```bash
+  curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
+  mv migrate.linux-amd64 $GOPATH/bin/migrate
+  ```
 
 \-    Выполнить миграцию:
 
