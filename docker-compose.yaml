@@ -1,0 +1,36 @@
+version: '3.9'
+services:
+  config_service:
+    container_name: config_service
+    build:
+        context: ./
+        dockerfile: Dockerfile
+    ports:
+      - "8084:8084"
+      - "8085:8085"
+    depends_on:
+      - db
+    environment:
+      PORT: ${PORT}
+      DELETE_CONFIG_IF_RECENTLY_USED: ${DELETE_CONFIG_IF_RECENTLY_USED}
+      RECENT_USE_DURATION_DAYS: ${RECENT_USE_DURATION_DAYS}
+      DB_DRIVER: ${DB_DRIVER}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+
+
+  db:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - ./.database/postgres/data:/var/lib/postgresql/data
+    environment:
+        POSTGRES_USER: ${DB_USER}
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+        POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5436:5432"
+

@@ -1,0 +1,91 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+package tutorial;
+
+option go_package = "./proto";
+
+
+service ConfigService {
+  rpc CreateConfig (Config) returns (ConfigResponse) {
+    option (google.api.http) = {
+      post: "/v1/config"
+      body: "*"
+    };
+  }
+
+  rpc GetConfig (ConfigName) returns (ConfigResponse) {
+    option (google.api.http) = {
+      get: "/v1/config/{service_name}"
+    };
+  }
+
+  rpc GetConfigByVersion (ConfigNameAndVersion) returns (ConfigResponse) {
+    option (google.api.http) = {
+      get: "/v1/config/{service_name}/{version}"
+    };
+  }
+
+  rpc UpdateConfig (Config) returns (ConfigResponse) {
+    option (google.api.http) = {
+      put: "/v1/config/{service_name}"
+      body: "*"
+    };
+  }
+
+  rpc DeleteConfig (ConfigName) returns (DeleteResponse) {
+    option (google.api.http) = {
+      delete: "/v1/config/{service_name}"
+    };
+  }
+
+  rpc DeleteConfigVersion (ConfigNameAndVersion) returns (DeleteResponse) {
+    option (google.api.http) = {
+      delete: "/v1/config/{service_name}/{version}"
+    };
+  }
+
+  rpc ListConfigs (ListRequest) returns (stream ConfigResponse) {
+    option (google.api.http) = {
+      get: "/v1/configs/{service_name}"
+    };
+  }
+
+  rpc SetRelevantConfig (ConfigNameAndVersion) returns (ConfigResponse) {
+    option (google.api.http) = {
+      put: "/v1/config/{service_name}/{version}/set_relevant"
+      body: "*"
+    };
+  }
+}
+
+
+message Config {
+  string service_name = 1;
+  map<string, string> data = 2;
+}
+
+message ConfigName {
+  string service_name = 1;
+}
+
+message ConfigNameAndVersion {
+  string service_name = 1;
+  int64 version = 2;
+}
+
+message ConfigResponse {
+  Config config = 1;
+  int64 version = 2;
+  optional google.protobuf.Timestamp created_at = 3;
+}
+
+message DeleteResponse {
+  string message = 1;
+}
+
+message ListRequest {
+  string service_name = 1;
+}
+
