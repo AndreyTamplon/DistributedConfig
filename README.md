@@ -6,6 +6,8 @@
 ![](/images/diagram.png)
 
 В config_service.proto описан протокол взаимодействия.
+
+Взаимодействие возможно через gRPC (для этого реализована [клиентская библиотека](https://github.com/AndreyTamplon/DistributedConfigLibrary)) или через GET, POST, PUT, и т.д. запросы.
 Сервис поддерживает следующий набор запросов:
 
 - ### Создание конфига
@@ -184,8 +186,8 @@
 
 ## Запуск
 
-1) Необходимо заполнить файл конфигурации (файл app.env). Парсер сначала посмотрит в .env файлах, затем, если эти значения указаны в переменных среды, он отдаст приоритет им.
-
+1) Необходимо заполнить файл конфигурации (файл app.env) и данные о базе в makefile. Парсер сначала посмотрит в .env файлах, затем, если эти значения указаны в переменных среды, он отдаст приоритет им.
+   
    2.1. Для неконтейнеризированного запуска необходимо:
     a) Установить postgresql,
     b) Создать базу данных: 
@@ -194,29 +196,16 @@
 createdb your_db_name
 ```
 
-    и внести данные о базе в makefile (host, user, password, database).
+Затем выполнить  
+
+```bash
+make migrate_up
+make run
+```
 
 2.2   Чтобы развернуть сервис в докере нужно проделать следующие шаги:   
 
 ```bash
+docker-compose --env-file app.env build
 docker-compose --env-file app.env up
-```
-
-- Войти в контейнер с приложением: 
-  
-  ```bash
-  docker exec -it <ContainerId> bash
-  ```
-
-- Установить утилиту migrate: 
-  
-  ```bash
-  curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
-  mv migrate.linux-amd64 $GOPATH/bin/migrate
-  ```
-
-\-    Выполнить миграцию:
-
-```bash
-make migrate_up
 ```

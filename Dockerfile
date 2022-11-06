@@ -14,5 +14,7 @@ RUN go build -o config_service app/main.go
 
 EXPOSE 8084
 
+CMD [ "bash", "./migrate.sh"]
 CMD [ "./config_service" ]
+
 
