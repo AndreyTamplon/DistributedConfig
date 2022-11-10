@@ -11,7 +11,8 @@ type Config struct {
 }
 
 type ServerConfig struct {
-	Port                       string `mapstructure:"PORT"`
+	GPRCPort                   string `mapstructure:"GRPC_PORT"`
+	GatewayPort                string `mapstructure:"GATEWAY_PORT"`
 	DeleteConfigIfRecentlyUsed bool   `mapstructure:"DELETE_CONFIG_IF_RECENTLY_USED"`
 	RecentUseDurationDays      int    `mapstructure:"RECENT_USE_DURATION_DAYS"`
 }

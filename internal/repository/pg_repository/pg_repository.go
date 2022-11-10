@@ -3,6 +3,7 @@ package pg_repository
 import (
 	"database/sql"
 	"distributedConfig/internal/entity"
+	"distributedConfig/internal/usecase"
 	"time"
 )
 
@@ -44,16 +45,20 @@ func (r *ConfigRepository) GetConfig(name string) (*entity.Config, error) {
 		return nil, err
 	}
 	err = r.updateLastUsed(config.ID)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
+	} else if err == sql.ErrNoRows {
+		return nil, usecase.ErrConfigNotFound
 	}
 	return &config, nil
 }
 
 func (r *ConfigRepository) GetConfigs(name string) ([]*entity.Config, error) {
 	rows, err := r.db.Query("SELECT id, name, version, created_at FROM configs WHERE name = $1 ORDER BY version DESC", name)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
+	} else if err == sql.ErrNoRows {
+		return nil, usecase.ErrConfigNotFound
 	}
 	defer func(rows *sql.Rows) {
 		err = rows.Close()
@@ -91,8 +96,10 @@ func (r *ConfigRepository) GetConfigByVersion(name string, version int64) (*enti
 		return nil, err
 	}
 	err = r.updateLastUsed(config.ID)
-	if err != nil {
+	if err != nil && err != sql.ErrNoRows {
 		return nil, err
+	} else if err == sql.ErrNoRows {
+		return nil, usecase.ErrConfigNotFound
 	}
 	return &config, nil
 }
@@ -177,12 +184,18 @@ func (r *ConfigRepository) GetDataByConfigID(id int) (map[string]string, error) 
 func (r *ConfigRepository) GetRelevantLastUsed(name string) (time.Time, error) {
 	var lastUsed time.Time
 	err := r.db.QueryRow("SELECT last_used FROM configs WHERE name = $1 AND relevant = TRUE", name).Scan(&lastUsed)
+	if err == sql.ErrNoRows {
+		return time.Time{}, usecase.ErrConfigNotFound
+	}
 	return lastUsed, err
 }
 
 func (r *ConfigRepository) GetLastUsedByVersion(name string, version int64) (time.Time, error) {
 	var lastUsed time.Time
 	err := r.db.QueryRow("SELECT last_used FROM configs WHERE name = $1 AND version = $2", name, version).Scan(&lastUsed)
+	if err == sql.ErrNoRows {
+		return time.Time{}, usecase.ErrConfigNotFound
+	}
 	return lastUsed, err
 }
 

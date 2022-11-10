@@ -209,3 +209,17 @@ make run
 docker-compose --env-file app.env build
 docker-compose --env-file app.env up
 ```
+
+Затем, если схема данных базы данных не была создана при предыдущих запусках необходимо войти в контейнер с сервисом:
+
+```bash
+docker-compose exec config_service /bin/bash
+```
+
+Затем запустить 
+
+```bash
+./migrate.sh <DB_NAME> <DB_USER> <DB_PASS> <DB_HOST>
+```
+
+Эта команда выполнить миграцию up и создаст схему данных. 

@@ -1,20 +1,18 @@
-FROM golang:latest
-RUN mkdir /config_service
-WORKDIR /config_service
+FROM golang:1.19.3-alpine3.16 AS build
+WORKDIR /app
 
-COPY go.mod ./
-COPY go.sum ./
-RUN go mod download
-
-COPY cmd/config_service/main.go app/
 COPY . .
+RUN go mod download
+RUN go build -o /config_service cmd/config_service/main.go
 
+FROM alpine:3.16 AS production
 
-RUN go build -o config_service app/main.go
-
+COPY --from=build config_service .
+COPY --from=build app/app.env .
+COPY --from=build app/migrate.sh .
+COPY --from=build app/migrations ./migrations
+RUN apk add --no-cache bash
+RUN ["chmod", "+x", "migrate.sh"]
 EXPOSE 8084
-
-CMD [ "bash", "./migrate.sh"]
 CMD [ "./config_service" ]
-
 

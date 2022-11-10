@@ -22,7 +22,7 @@ func Run(cfg *config.Config) {
 	configRepository := pg_repository.NewConfigRepository(db)
 	configUseCase := usecase.NewConfigUseCase(*l, configRepository, cfg)
 	configService := grpc_service.NewConfigService(*configUseCase)
-	go internal.RunGatewayServer(configService, l)
+	go internal.RunGatewayServer(configService, cfg, l)
 	internal.RunGrpcServer(configService, cfg, l)
 
 }

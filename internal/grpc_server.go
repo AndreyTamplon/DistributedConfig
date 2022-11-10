@@ -14,8 +14,8 @@ func RunGrpcServer(configService *grpc_service.ConfigService, cfg *config.Config
 	interceptor := interceptors.NewInterceptor(*l)
 	server := grpc.NewServer(grpc.UnaryInterceptor(interceptor.Logger))
 	proto.RegisterConfigServiceServer(server, configService)
-	l.Info("Starting gRPC server on port %s", cfg.Server.Port)
-	listener, err := net.Listen("tcp", ":"+cfg.Server.Port)
+	l.Info("Starting gRPC server on port %s", cfg.Server.GPRCPort)
+	listener, err := net.Listen("tcp", ":"+cfg.Server.GPRCPort)
 	if err != nil {
 		l.Fatal("Failed to listen: %v", err)
 		return

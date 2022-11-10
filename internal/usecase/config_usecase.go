@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"database/sql"
 	cfg "distributedConfig/config"
 	"distributedConfig/internal/entity"
 	"distributedConfig/internal/repository"
@@ -40,10 +39,7 @@ func (c *ConfigUseCase) CreateConfig(config *entity.Config) error {
 
 func (c *ConfigUseCase) GetConfig(name string) (*entity.Config, error) {
 	config, err := c.repository.GetConfig(name)
-	if err != nil && err == sql.ErrNoRows {
-		c.l.Error("Config %s not found", name)
-		return nil, err
-	} else if err != nil {
+	if err != nil {
 		c.l.Error("Unable to get config: %s", err)
 		return nil, err
 	}
@@ -53,10 +49,7 @@ func (c *ConfigUseCase) GetConfig(name string) (*entity.Config, error) {
 
 func (c *ConfigUseCase) GetConfigs(name string) ([]*entity.Config, error) {
 	configs, err := c.repository.GetConfigs(name)
-	if err != nil && err == sql.ErrNoRows {
-		c.l.Error("Config %s not found", name)
-		return nil, ErrConfigNotFound
-	} else if err != nil {
+	if err != nil {
 		c.l.Error("Unable to get configs: %s", err)
 		return nil, err
 	}
@@ -66,10 +59,7 @@ func (c *ConfigUseCase) GetConfigs(name string) ([]*entity.Config, error) {
 
 func (c *ConfigUseCase) GetConfigByVersion(name string, version int64) (*entity.Config, error) {
 	config, err := c.repository.GetConfigByVersion(name, version)
-	if err != nil && err == sql.ErrNoRows {
-		c.l.Error("Config %s with version %d not found", name, version)
-		return nil, ErrConfigNotFound
-	} else if err != nil {
+	if err != nil {
 		c.l.Error("Unable to get config: %s with version %d", name, version)
 		return nil, err
 	}
@@ -190,10 +180,7 @@ func (c *ConfigUseCase) SetRelevantConfig(name string, version int64) (*entity.C
 		return nil, ErrConfigNotFound
 	}
 	config, err := c.repository.SetRelevantConfig(name, version)
-	if err != nil && err == sql.ErrNoRows {
-		c.l.Error("Config %s with version %d not found", name, version)
-		return nil, ErrConfigNotFound
-	} else if err != nil {
+	if err != nil {
 		c.l.Error("Unable to get config: %s with version %d", name, version)
 		return nil, err
 	}

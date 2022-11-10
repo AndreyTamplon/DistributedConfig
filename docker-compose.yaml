@@ -11,7 +11,8 @@ services:
     depends_on:
       - db
     environment:
-      PORT: ${PORT}
+      GRPC_PORT: ${GRPC_PORT}
+      GATEWAY_PORT: ${GATEWAY_PORT}
       DELETE_CONFIG_IF_RECENTLY_USED: ${DELETE_CONFIG_IF_RECENTLY_USED}
       RECENT_USE_DURATION_DAYS: ${RECENT_USE_DURATION_DAYS}
       DB_DRIVER: ${DB_DRIVER}

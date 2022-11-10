@@ -9,7 +9,7 @@ test:
 # ==============================================================================
 # migrate postgres
 DB_NAME = dc
-DB_USER = 
+DB_USER =
 DB_PASS =
 DB_HOST = localhost
 force:
